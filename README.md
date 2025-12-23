@@ -14,65 +14,87 @@
 - 병합된 vertex(분기점)를 다시 분리
 - 3개 이상의 segment가 연결된 vertex를 개별 vertex로 분리
 
-### 3. 디버그 모드
-- 단계별 실행으로 동작 확인 가능
-- Flatten → 끝점 분석 → Vertex 병합 순서로 테스트
+---
 
 ## 설치 방법
 
-### 방법 1: 로컬 설치 (개발용)
+### 디자이너용 (간단 설치)
 
-1. 이 저장소를 클론합니다:
-   ```bash
-   git clone https://github.com/wmakerjun/figma-join-path.git
-   cd figma-join-path
-   ```
+> 💡 코딩 지식 없이 바로 설치할 수 있습니다!
 
-2. 의존성을 설치합니다:
-   ```bash
-   npm install
-   ```
+**1단계: 플러그인 파일 다운로드**
 
-3. 빌드합니다:
-   ```bash
-   npm run build
-   ```
+1. [이 링크를 클릭](https://github.com/wmakerjun/figma-join-path/archive/refs/heads/main.zip)하여 ZIP 파일 다운로드
+2. 다운로드된 `figma-join-path-main.zip` 파일의 압축을 풀기
+3. 압축을 푼 폴더를 원하는 위치에 저장 (예: 문서 폴더)
 
-4. Figma 데스크톱 앱에서 플러그인을 로드합니다:
-   - `Plugins` → `Development` → `Import plugin from manifest...`
-   - 이 폴더의 `manifest.json` 파일 선택
+**2단계: Figma에 플러그인 등록**
 
-### 방법 2: 개발 모드로 실행
+1. **Figma 데스크톱 앱** 실행 (웹 버전에서는 로컬 플러그인 사용 불가)
+2. 아무 파일이나 열기
+3. 상단 메뉴에서 `Plugins` 클릭
+4. `Development` → `Import plugin from manifest...` 선택
+5. 압축을 푼 폴더에서 `manifest.json` 파일 선택
+6. 완료! 🎉
+
+**3단계: 플러그인 실행**
+
+1. `Plugins` → `Development` → `패스 연결 (Join Paths)` 클릭
+
+> ⚠️ **주의**: 압축을 푼 폴더를 삭제하면 플러그인이 작동하지 않습니다. 폴더를 안전한 위치에 보관하세요.
+
+---
+
+### 개발자용 (소스 빌드)
 
 ```bash
-npm run watch  # 파일 변경 감지 및 자동 빌드
+# 저장소 클론
+git clone https://github.com/wmakerjun/figma-join-path.git
+cd figma-join-path
+
+# 의존성 설치
+npm install
+
+# 빌드
+npm run build
+
+# 또는 개발 모드 (파일 변경 감지)
+npm run watch
 ```
+
+Figma에서 플러그인 로드:
+- `Plugins` → `Development` → `Import plugin from manifest...`
+- `manifest.json` 파일 선택
+
+---
 
 ## 사용 방법
 
-### 기본 사용법
+### 패스 연결하기
 
-1. **벡터 2개 이상 선택**
-2. `Plugins` → `Development` → `패스 연결 (Join Paths)` 실행
+1. **연결할 벡터 2개 이상 선택**
+2. 플러그인 실행: `Plugins` → `Development` → `패스 연결 (Join Paths)`
 3. 옵션 설정:
-   - **최대 연결 거리**: 연결할 끝점 간 최대 거리 (px)
-   - **거리 제한 없음**: 체크하면 거리 무제한
-   - **선분 위에도 연결**: 끝점을 선분 중간에 연결
+   - **최대 연결 거리**: 연결할 끝점 간 최대 거리 (기본 10px)
+   - **거리 제한 없음**: 체크하면 거리와 상관없이 연결
+   - **선분 위에도 연결**: 끝점을 다른 패스의 선분 중간에 연결
 4. **패스 연결** 버튼 클릭
 
-### 연결 해제
+### 연결 해제하기
 
-1. **연결된 벡터 1개 이상 선택**
+1. **벡터 1개 이상 선택**
 2. **연결 해제 (분기점 분리)** 버튼 클릭
-3. 분기점(3개 이상 연결된 vertex)이 분리됨
+3. 분기점(3개 이상 연결된 점)이 분리됨
 
-### 디버그 모드
+### 디버그 모드 (문제 해결용)
 
 복잡한 경우 단계별로 확인할 수 있습니다:
 
 1. **1. Flatten만**: 선택한 벡터들을 하나로 합침
 2. **2. 끝점 분석**: 끝점 개수와 좌표 확인
 3. **3. Vertex 병합**: 실제 병합 수행
+
+---
 
 ## 옵션 설명
 
@@ -82,6 +104,8 @@ npm run watch  # 파일 변경 감지 및 자동 빌드
 | 거리 제한 없음 | 체크 시 거리 무제한으로 연결 |
 | 선분 위에도 연결 | 끝점을 다른 패스의 선분 중간에 연결 |
 | 원본 벡터 병합 | 선택한 벡터들을 하나의 벡터로 합침 |
+
+---
 
 ## 동작 원리
 
@@ -98,23 +122,23 @@ npm run watch  # 파일 변경 감지 및 자동 빌드
        ●                         ●
 ```
 
-## 기술 스택
+---
 
-- Figma Plugin API
-- TypeScript
-- esbuild (번들링)
+## 자주 묻는 질문 (FAQ)
 
-## 파일 구조
+**Q: 웹 브라우저 Figma에서 사용할 수 있나요?**
+> A: 아니요, 로컬 플러그인은 **Figma 데스크톱 앱**에서만 사용 가능합니다.
 
-```
-figma-join-path/
-├── manifest.json     # 플러그인 설정
-├── code.ts          # 메인 로직 (TypeScript)
-├── code.js          # 빌드된 메인 로직
-├── ui.html          # 플러그인 UI
-├── package.json     # npm 설정
-└── tsconfig.json    # TypeScript 설정
-```
+**Q: 플러그인이 목록에 안 보여요.**
+> A: `Plugins` → `Development` 메뉴 안에 있습니다. 일반 Plugins 메뉴가 아닌 Development 하위 메뉴를 확인하세요.
+
+**Q: "manifest.json을 찾을 수 없습니다" 오류가 나요.**
+> A: 압축을 풀 때 폴더가 중첩되었을 수 있습니다. `manifest.json` 파일이 있는 폴더를 직접 선택하세요.
+
+**Q: 연결했는데 점을 이동하면 따로 움직여요.**
+> A: v2에서는 vertex가 실제로 병합되어 함께 움직입니다. 디버그 모드에서 "병합 후 Vertices" 수가 줄어들었는지 확인하세요.
+
+---
 
 ## 라이선스
 
