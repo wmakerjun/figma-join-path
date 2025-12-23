@@ -1,0 +1,14 @@
+{
+  "name": "figma-join-paths",
+  "version": "1.0.0",
+  "description": "피그마에서 끊어진 벡터 패스들을 자동으로 연결해주는 플러그인",
+  "scripts": {
+    "build": "esbuild code.ts --bundle --outfile=code.js --target=es6",
+    "watch": "esbuild code.ts --bundle --outfile=code.js --target=es6 --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.98.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0"
+  }
+}

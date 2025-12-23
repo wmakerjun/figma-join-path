@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 11px;
+      color: var(--figma-color-text);
+      background-color: var(--figma-color-bg);
+      padding: 12px;
+    }
+
+    .section {
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--figma-color-text);
+    }
+
+    .selection-info {
+      background-color: var(--figma-color-bg-secondary);
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .selection-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.6;
+    }
+
+    .selection-text {
+      color: var(--figma-color-text-secondary);
+    }
+
+    .selection-count {
+      font-weight: 600;
+      color: var(--figma-color-text);
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .option-label {
+      flex: 1;
+      color: var(--figma-color-text);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="range"] {
+      width: 100px;
+      height: 4px;
+      -webkit-appearance: none;
+      background: var(--figma-color-border);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: var(--figma-color-bg-brand);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    input[type="number"] {
+      width: 50px;
+      padding: 4px 6px;
+      border: 1px solid var(--figma-color-border);
+      border-radius: 4px;
+      background: var(--figma-color-bg);
+      color: var(--figma-color-text);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--figma-color-border-brand);
+      outline: none;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--figma-color-bg-brand);
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      color: var(--figma-color-text);
+      cursor: pointer;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--figma-color-bg-brand);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--figma-color-bg-brand-hover);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--figma-color-text);
+      border: 1px solid var(--figma-color-border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--figma-color-bg-hover);
+    }
+
+    .result-message {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      display: none;
+    }
+
+    .result-success {
+      background-color: rgba(24, 160, 88, 0.1);
+      color: #18a058;
+      display: block;
+    }
+
+    .result-error {
+      background-color: rgba(208, 48, 80, 0.1);
+      color: #d03050;
+      display: block;
+    }
+
+    .disabled-slider {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .debug-buttons {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .btn-debug {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      background-color: var(--figma-color-bg-secondary);
+      color: var(--figma-color-text-secondary);
+      border: 1px solid var(--figma-color-border);
+    }
+
+    .btn-debug:hover:not(:disabled) {
+      background-color: var(--figma-color-bg-hover);
+      color: var(--figma-color-text);
+    }
+
+    .btn-debug:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .debug-log {
+      background-color: var(--figma-color-bg-secondary);
+      border: 1px solid var(--figma-color-border);
+      border-radius: 4px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 10px;
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    .debug-log.visible {
+      display: block;
+    }
+
+    .btn-disconnect {
+      width: 100%;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      background-color: transparent;
+      color: var(--figma-color-text-secondary);
+      border: 1px solid var(--figma-color-border);
+      transition: all 0.15s ease;
+    }
+
+    .btn-disconnect:hover:not(:disabled) {
+      background-color: var(--figma-color-bg-hover);
+      color: var(--figma-color-text);
+    }
+
+    .btn-disconnect:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <!-- 선택 정보 -->
+  <div class="selection-info">
+    <svg class="selection-icon" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M2 2h5v5H2V2zm1 1v3h3V3H3zm7-1h5v5h-5V2zm1 1v3h3V3h-3zM2 9h5v5H2V9zm1 1v3h3v-3H3zm7-1h5v5h-5V9zm1 1v3h3v-3h-3z"/>
+    </svg>
+    <span class="selection-text">선택된 벡터: <span id="selection-count" class="selection-count">0</span>개</span>
+  </div>
+
+  <!-- 옵션: 최대 연결 거리 -->
+  <div class="section">
+    <div class="section-title">최대 연결 거리</div>
+    <div class="option-row">
+      <div id="distance-controls" class="slider-container">
+        <input type="range" id="distance-slider" min="1" max="100" value="10">
+        <input type="number" id="distance-input" min="1" max="1000" value="10">
+        <span>px</span>
+      </div>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="no-limit-checkbox">
+      <label class="checkbox-label" for="no-limit-checkbox">거리 제한 없음</label>
+    </div>
+  </div>
+
+  <!-- 옵션: 연결 방식 -->
+  <div class="section">
+    <div class="checkbox-row">
+      <input type="checkbox" id="connect-to-segment-checkbox">
+      <label class="checkbox-label" for="connect-to-segment-checkbox">선분 위에도 연결 (끝점→선분)</label>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="delete-original-checkbox" checked>
+      <label class="checkbox-label" for="delete-original-checkbox">원본 벡터 병합 (flatten)</label>
+    </div>
+  </div>
+
+  <!-- 메인 버튼 -->
+  <div class="button-row">
+    <button class="btn-secondary" id="cancel-btn">취소</button>
+    <button class="btn-primary" id="join-btn" disabled>패스 연결</button>
+  </div>
+
+  <!-- 연결 해제 버튼 -->
+  <div class="button-row" style="margin-top: 8px;">
+    <button class="btn-disconnect" id="disconnect-btn" disabled>연결 해제 (분기점 분리)</button>
+  </div>
+
+  <!-- 디버그 모드 -->
+  <div class="section" style="margin-top: 16px; border-top: 1px solid var(--figma-color-border); padding-top: 16px;">
+    <div class="section-title">디버그 모드 (단계별 실행)</div>
+    <div class="debug-buttons">
+      <button class="btn-debug" id="step1-btn" disabled>1. Flatten만</button>
+      <button class="btn-debug" id="step2-btn" disabled>2. 끝점 분석</button>
+      <button class="btn-debug" id="step3-btn" disabled>3. Vertex 병합</button>
+    </div>
+    <div id="debug-log" class="debug-log"></div>
+  </div>
+
+  <!-- 결과 메시지 -->
+  <div id="result-message" class="result-message"></div>
+
+  <script>
+    // DOM 요소
+    const selectionCountEl = document.getElementById('selection-count');
+    const distanceSlider = document.getElementById('distance-slider');
+    const distanceInput = document.getElementById('distance-input');
+    const distanceControls = document.getElementById('distance-controls');
+    const noLimitCheckbox = document.getElementById('no-limit-checkbox');
+    const connectToSegmentCheckbox = document.getElementById('connect-to-segment-checkbox');
+    const deleteOriginalCheckbox = document.getElementById('delete-original-checkbox');
+    const joinBtn = document.getElementById('join-btn');
+    const disconnectBtn = document.getElementById('disconnect-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const resultMessage = document.getElementById('result-message');
+
+    // 디버그 요소
+    const step1Btn = document.getElementById('step1-btn');
+    const step2Btn = document.getElementById('step2-btn');
+    const step3Btn = document.getElementById('step3-btn');
+    const debugLog = document.getElementById('debug-log');
+
+    // 슬라이더와 인풋 동기화
+    distanceSlider.addEventListener('input', () => {
+      distanceInput.value = distanceSlider.value;
+    });
+
+    distanceInput.addEventListener('input', () => {
+      let value = parseInt(distanceInput.value) || 1;
+      value = Math.max(1, Math.min(1000, value));
+      distanceInput.value = value;
+      distanceSlider.value = Math.min(value, 100);
+    });
+
+    // 거리 제한 없음 체크박스
+    noLimitCheckbox.addEventListener('change', () => {
+      if (noLimitCheckbox.checked) {
+        distanceControls.classList.add('disabled-slider');
+      } else {
+        distanceControls.classList.remove('disabled-slider');
+      }
+    });
+
+    // 패스 연결 버튼
+    joinBtn.addEventListener('click', () => {
+      const maxDistance = parseInt(distanceInput.value) || 10;
+      const noLimit = noLimitCheckbox.checked;
+      const connectToSegment = connectToSegmentCheckbox.checked;
+      const deleteOriginal = deleteOriginalCheckbox.checked;
+
+      parent.postMessage({
+        pluginMessage: {
+          type: 'join',
+          maxDistance,
+          noLimit,
+          connectToSegment,
+          deleteOriginal
+        }
+      }, '*');
+
+      // 버튼 비활성화 (처리 중)
+      joinBtn.disabled = true;
+      joinBtn.textContent = '처리 중...';
+    });
+
+    // 취소 버튼
+    cancelBtn.addEventListener('click', () => {
+      parent.postMessage({
+        pluginMessage: { type: 'cancel' }
+      }, '*');
+    });
+
+    // 연결 해제 버튼
+    disconnectBtn.addEventListener('click', () => {
+      parent.postMessage({
+        pluginMessage: { type: 'disconnect' }
+      }, '*');
+
+      disconnectBtn.disabled = true;
+      disconnectBtn.textContent = '처리 중...';
+    });
+
+    // 디버그 버튼 이벤트
+    step1Btn.addEventListener('click', () => {
+      parent.postMessage({ pluginMessage: { type: 'debug-flatten' } }, '*');
+    });
+
+    step2Btn.addEventListener('click', () => {
+      parent.postMessage({ pluginMessage: { type: 'debug-analyze' } }, '*');
+    });
+
+    step3Btn.addEventListener('click', () => {
+      const maxDistance = parseInt(distanceInput.value) || 10;
+      const noLimit = noLimitCheckbox.checked;
+      const connectToSegment = connectToSegmentCheckbox.checked;
+      parent.postMessage({ pluginMessage: { type: 'debug-merge', maxDistance, noLimit, connectToSegment } }, '*');
+    });
+
+    function appendLog(text) {
+      debugLog.classList.add('visible');
+      debugLog.textContent += text + '\n';
+      debugLog.scrollTop = debugLog.scrollHeight;
+    }
+
+    function clearLog() {
+      debugLog.textContent = '';
+      debugLog.classList.remove('visible');
+    }
+
+    // 플러그인으로부터 메시지 수신
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+
+      if (msg.type === 'selection') {
+        selectionCountEl.textContent = msg.count;
+        const joinEnabled = msg.count >= 2;
+        const disconnectEnabled = msg.count >= 1;
+        joinBtn.disabled = !joinEnabled;
+        disconnectBtn.disabled = !disconnectEnabled;
+        step1Btn.disabled = !joinEnabled;
+        step2Btn.disabled = true; // flatten 후에만 활성화
+        step3Btn.disabled = true; // analyze 후에만 활성화
+        joinBtn.textContent = '패스 연결';
+        disconnectBtn.textContent = '연결 해제 (분기점 분리)';
+
+        // 결과 메시지 초기화
+        resultMessage.className = 'result-message';
+        resultMessage.style.display = 'none';
+        clearLog();
+      }
+
+      if (msg.type === 'result') {
+        resultMessage.textContent = msg.message;
+        resultMessage.className = 'result-message result-success';
+        joinBtn.disabled = true;
+        joinBtn.textContent = '패스 연결';
+      }
+
+      if (msg.type === 'error') {
+        resultMessage.textContent = msg.message;
+        resultMessage.className = 'result-message result-error';
+        joinBtn.disabled = false;
+        joinBtn.textContent = '패스 연결';
+      }
+
+      if (msg.type === 'debug-log') {
+        appendLog(msg.message);
+      }
+
+      if (msg.type === 'debug-flatten-done') {
+        appendLog(msg.message);
+        step2Btn.disabled = false;
+      }
+
+      if (msg.type === 'debug-analyze-done') {
+        appendLog(msg.message);
+        step3Btn.disabled = false;
+      }
+
+      if (msg.type === 'debug-merge-done') {
+        appendLog(msg.message);
+      }
+    };
+  </script>
+</body>
+</html>

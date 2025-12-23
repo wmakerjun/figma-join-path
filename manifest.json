@@ -1,0 +1,10 @@
+{
+  "name": "패스 연결 (Join Paths)",
+  "id": "figma-join-paths-plugin-001",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"]
+}
